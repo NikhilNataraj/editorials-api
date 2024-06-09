@@ -56,13 +56,17 @@ def fetch_articles():
     hindu_links = hindu.get_hindu_links()
     for link in hindu_links:
         article = hindu.get_article(link)
-        store_article(article, "Hindu")
+        if not db.session.execute(db.select(Article).
+                                          where(Article.title == list(article.keys())[0])).scalar_one_or_none():
+            store_article(article, "Hindu")
 
     # Fetch articles from TOI
     toi_links = toi.get_toi_links()
     for link in toi_links:
         article = toi.get_article(link)
-        store_article(article, "TOI")
+        if not db.session.execute(db.select(Article).
+                                          where(Article.title == list(article.keys())[0])).scalar_one_or_none():
+            store_article(article, "TOI")
 
 
 def store_article(article, source):
