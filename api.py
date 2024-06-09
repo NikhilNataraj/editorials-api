@@ -1,15 +1,18 @@
+import os
+from dotenv import load_dotenv
 import toi
 import hindu
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_apscheduler import APScheduler
 
+load_dotenv()
 
 app = Flask(__name__)
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///news.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("POSTGRES_URL")
 db = SQLAlchemy(app)
 
 
@@ -32,6 +35,10 @@ with app.app_context():
 
 scheduler = APScheduler()
 scheduler.init_app(app)
+
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 
 @app.route("/api/articles")
@@ -65,4 +72,4 @@ def store_article(article, source):
 
 if __name__ == "__main__":
     scheduler.start()
-    app.run(debug=True)
+    app.run()
