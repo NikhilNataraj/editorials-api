@@ -6,3 +6,4 @@ lxml~=5.2.2
 psycopg2-binary
 python-dotenv~=1.0.1
 Flask-SQLAlchemy
+Flask-APScheduler
