@@ -37,6 +37,7 @@ with app.app_context():
 scheduler = APScheduler()
 scheduler.init_app(app)
 
+
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -69,6 +70,21 @@ def store_article(article, source):
         db_article = Article(title=title, content=content, source=source)
         db.session.add(db_article)
     db.session.commit()
+
+
+@app.route("/api/article/<int:index>")
+def get_article(index):
+    print(f"Querying article with index: {index}")
+    index += 1
+    with app.app_context():
+        required_article = Article.query.get(index)
+    article_data = {
+        'id': required_article.id,
+        'title': required_article.title,
+        'content': required_article.content,
+        'source': required_article.source
+    }
+    return jsonify(article_data)
 
 
 if __name__ == "__main__":
