@@ -39,7 +39,7 @@ def api_articles():
         [{'title': article.title, 'content': article.content, 'source': article.source} for article in articles])
 
 
-@app.route("/api/cron", methods=["POST"])
+@app.route("/api/cron")
 def fetch_articles():
     # Fetch articles from Hindu
     hindu_links = hindu.get_hindu_links()
