@@ -34,7 +34,7 @@ def home():
 
 @app.route("/api/articles")
 def api_articles():
-    articles = Article.query.all()
+    articles = db.session.execute(db.select(Article).order_by(Article.id)).scalars()
     return jsonify(
         [{'title': article.title, 'content': article.content, 'source': article.source} for article in articles])
 
@@ -80,5 +80,4 @@ def get_article(index):
 
 
 if __name__ == "__main__":
-    scheduler.start()
     app.run()
