@@ -57,6 +57,8 @@ def fetch_articles():
                                           where(Article.title == list(article.keys())[0])).scalar_one_or_none():
             store_article(article, "TOI")
 
+    return jsonify({"message": "Articles fetched successfully"}), 200
+
 
 def store_article(article, source):
     for title, content in article.items():
