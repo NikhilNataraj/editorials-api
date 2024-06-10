@@ -6,7 +6,6 @@ import hindu
 from flask import Flask, jsonify, render_template
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from flask_apscheduler import APScheduler
 
 load_dotenv()
 
@@ -15,13 +14,6 @@ Bootstrap(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("POSTGRES_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-
-
-class Config:
-    SCHEDULER_API_ENABLED = True
-
-
-app.config.from_object(Config())
 
 
 class Article(db.Model):
@@ -33,9 +25,6 @@ class Article(db.Model):
 
 with app.app_context():
     db.create_all()
-
-scheduler = APScheduler()
-scheduler.init_app(app)
 
 
 @app.route("/")
@@ -50,7 +39,7 @@ def api_articles():
         [{'title': article.title, 'content': article.content, 'source': article.source} for article in articles])
 
 
-@scheduler.task('cron', id='fetch_articles', hour=11, minute=5)
+@app.route("/api/cron", methods=["POST"])
 def fetch_articles():
     # Fetch articles from Hindu
     hindu_links = hindu.get_hindu_links()
