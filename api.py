@@ -50,7 +50,7 @@ def api_articles():
         [{'title': article.title, 'content': article.content, 'source': article.source} for article in articles])
 
 
-@scheduler.task('interval', id='fetch_articles', minutes=720)
+@scheduler.task('cron', id='fetch_articles', hour=11, minute=5)
 def fetch_articles():
     # Fetch articles from Hindu
     hindu_links = hindu.get_hindu_links()
