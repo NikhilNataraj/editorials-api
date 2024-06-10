@@ -67,7 +67,6 @@ def store_article(article, source):
 
 @app.route("/api/article/<int:index>")
 def get_article(index):
-    print(f"Querying article with index: {index}")
     index += 1
     with app.app_context():
         required_article = Article.query.get(index)
