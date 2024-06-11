@@ -32,7 +32,7 @@ def get_article(link):
     data = response.text
 
     soup = BeautifulSoup(data, "lxml")
-    article_content = soup.find(class_="main-content").find_all("p")
+    article_content = soup.find(class_="main-content").find_all("p", recursive=False)
     content = [tag.text for tag in article_content if len(tag.text) > 50]
     content = " ".join(content)
     title = soup.find(class_="show-header").find("h1").text.strip("\n")
