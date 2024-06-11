@@ -59,8 +59,9 @@ def fetch_articles():
 
 
 def store_article(article, source):
+    row = Article.query.count() + 1
     for title, content in article.items():
-        db_article = Article(title=title, content=content, source=source)
+        db_article = Article(id=row, title=title, content=content, source=source)
         db.session.add(db_article)
     db.session.commit()
 
