@@ -72,6 +72,7 @@ def store_article(article, source):
 
 @app.route("/api/article/<title>")
 def get_article(title):
+    title = "%".join(list(title.split(" ")))
     with app.app_context():
         required_article = Article.query.filter(Article.title.ilike(f"%{title}%")).first()
 
