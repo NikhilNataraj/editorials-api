@@ -74,16 +74,18 @@ def store_article(article, source):
 def get_article(title):
     with app.app_context():
         required_article = Article.query.filter_by(title=title).first()
-        if required_article is None:
-            return jsonify({"error": "Article not found"}), 404
-    article_data = {
-        'id': required_article.id,
-        'title': required_article.title,
-        'content': required_article.content,
-        'source': required_article.source,
-        'date': required_article.date
-    }
-    return jsonify(article_data)
+
+    if required_article:
+        article_data = {
+            'id': required_article.id,
+            'title': required_article.title,
+            'content': required_article.content,
+            'source': required_article.source,
+            'date': required_article.date
+        }
+        return jsonify(article_data)
+
+    return {"error": "Article not found"}
 
 
 if __name__ == "__main__":
