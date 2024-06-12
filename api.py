@@ -72,32 +72,21 @@ def store_article(article, source):
 
 @app.route("/api/article/<title>")
 def get_article(title):
-    # title = "%".join(list(title.split(" ")))
-    # title_pattern = "%" + title + "%"
+    title = "%".join(list(title.split(" ")))
+    title_pattern = "%" + title + "%"
+
     with app.app_context():
-        # required_article = db.session.execute(db.select(Article).where(Article.title.like(title_pattern))).scalar()
-        articles = db.session.execute(db.select(Article).order_by(Article.id)).scalars().all()
+        required_article = db.session.execute(db.select(Article).where(Article.title.like(title_pattern))).scalar()
 
-        for article in articles:
-            if article.title == title:
-                article_data = {
-                    'id': article.id,
-                    'title': article.title,
-                    'content': article.content,
-                    'source': article.source,
-                    'date': article.date
-                }
-                return jsonify(article_data)
-
-    # if required_article:
-    #     article_data = {
-    #         'id': required_article.id,
-    #         'title': required_article.title,
-    #         'content': required_article.content,
-    #         'source': required_article.source,
-    #         'date': required_article.date
-    #     }
-    #     return jsonify(article_data)
+    if required_article:
+        article_data = {
+            'id': required_article.id,
+            'title': required_article.title,
+            'content': required_article.content,
+            'source': required_article.source,
+            'date': required_article.date
+        }
+        return jsonify(article_data)
 
     return {"error": "Article not found"}
 
