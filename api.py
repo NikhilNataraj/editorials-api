@@ -79,7 +79,8 @@ def get_article(index):
         'id': required_article.id,
         'title': required_article.title,
         'content': required_article.content,
-        'source': required_article.source
+        'source': required_article.source,
+        'date': required_article.date
     }
     return jsonify(article_data)
 
