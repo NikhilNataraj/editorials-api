@@ -70,11 +70,12 @@ def store_article(article, source):
     db.session.commit()
 
 
-@app.route("/api/article/<int:index>")
-def get_article(index):
-    index += 1
+@app.route("/api/article/<title>")
+def get_article(title):
     with app.app_context():
-        required_article = Article.query.get(index)
+        required_article = Article.query.filter_by(title=title).first()
+        if required_article is None:
+            return jsonify({"error": "Article not found"}), 404
     article_data = {
         'id': required_article.id,
         'title': required_article.title,
