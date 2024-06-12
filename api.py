@@ -72,9 +72,9 @@ def store_article(article, source):
 
 @app.route("/api/article/<title>")
 def get_article(title):
-    # title = "%".join(list(title.split(" ")))
+    title = "%".join(list(title.split(" ")))
     with app.app_context():
-        required_article = db.session.execute(db.select(Article).where(Article.title == title)).scalar()
+        required_article = db.session.execute(db.select(Article).where(Article.title.like(title))).scalar()
 
     if required_article:
         article_data = {
