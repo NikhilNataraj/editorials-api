@@ -36,7 +36,7 @@ def home():
 
 @app.route("/api/articles")
 def api_articles():
-    articles = db.session.execute(db.select(Article).order_by(Article.date)).scalars()
+    articles = db.session.execute(db.select(Article).order_by(Article.id)).scalars()
     return jsonify(
         [{'title': article.title, 'content': article.content, 'source': article.source, 'date': article.date}
          for article in articles])
