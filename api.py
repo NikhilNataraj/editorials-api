@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import toi
 import hindu
 
+from datetime import datetime
 from flask import Flask, jsonify, render_template
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
@@ -21,6 +22,7 @@ class Article(db.Model):
     title = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text, nullable=False)
     source = db.Column(db.String(50), nullable=False)
+    date = db.Column(db.String(255), nullable=False)
 
 
 with app.app_context():
@@ -36,7 +38,8 @@ def home():
 def api_articles():
     articles = db.session.execute(db.select(Article).order_by(Article.id)).scalars()
     return jsonify(
-        [{'title': article.title, 'content': article.content, 'source': article.source} for article in articles])
+        [{'title': article.title, 'content': article.content, 'source': article.source, 'date': article.date}
+         for article in articles])
 
 
 @app.route("/api/cron")
@@ -46,22 +49,23 @@ def fetch_articles():
     for link in toi_links:
         article = toi.get_article(link)
         if not db.session.execute(db.select(Article).where(Article.title == list(article.keys())[0])).scalar_one_or_none():
-            store_article(article, "TOI")
+            store_article(article, "The Times of India")
 
     # Fetch articles from Hindu
     hindu_links = hindu.get_hindu_links()
     for link in hindu_links:
         article = hindu.get_article(link)
         if not db.session.execute(db.select(Article).where(Article.title == list(article.keys())[0])).scalar_one_or_none():
-            store_article(article, "Hindu")
+            store_article(article, "The Hindu")
 
     return jsonify({"message": "Articles fetched successfully"}), 200
 
 
 def store_article(article, source):
     row = Article.query.count() + 1
+    date = datetime.now().strftime("%B %d, %Y")
     for title, content in article.items():
-        db_article = Article(id=row, title=title, content=content, source=source)
+        db_article = Article(id=row, title=title, content=content, source=source, date=date)
         db.session.add(db_article)
     db.session.commit()
 
