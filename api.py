@@ -38,8 +38,8 @@ def home():
 def api_articles():
     articles = db.session.execute(db.select(Article).order_by(Article.id)).scalars()
     return jsonify(
-        [{'title': article.title, 'content': article.content, 'source': article.source, 'date': article.date}
-         for article in articles])
+        [{"id": article.id, 'title': article.title, 'content': article.content, 'source': article.source,
+          'date': article.date} for article in articles])
 
 
 @app.route("/api/cron")
