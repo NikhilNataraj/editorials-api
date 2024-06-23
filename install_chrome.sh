@@ -9,7 +9,7 @@ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 dpkg -i google-chrome-stable_current_amd64.deb || apt-get -f install -y
 
 # Ensure Google Chrome is available in the PATH
-ln -s /usr/bin/google-chrome /usr/local/bin/google-chrome
+ln -s /usr/bin/google-chrome-stable /usr/local/bin/google-chrome
 
 # Download and install ChromeDriver
 CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)

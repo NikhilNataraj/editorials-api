@@ -5,7 +5,7 @@
             "src": "api.py",
             "use": "@vercel/python",
             "config": {
-                "buildCommand": "bash install_chrome.sh"
+                "buildCommand": "bash install_chrome.sh && pip install -r requirements.txt"
             }
         }
     ],
