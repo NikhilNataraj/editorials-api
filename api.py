@@ -55,7 +55,7 @@ def fetch_articles():
 
     # Fetch articles from HT
     ht_links = ht.get_ht_links()
-    for link in hindu_links:
+    for link in ht_links:
         article = ht.get_article(link)
         if not db.session.execute(
                 db.select(Article).where(Article.title == list(article.keys())[0])).scalar_one_or_none():
@@ -67,8 +67,6 @@ def fetch_articles():
         article = toi.get_article(link)
         if not db.session.execute(db.select(Article).where(Article.title == list(article.keys())[0])).scalar_one_or_none():
             store_article(article, "The Times of India")
-
-
 
     return jsonify({"message": "Articles fetched successfully"}), 200
 
