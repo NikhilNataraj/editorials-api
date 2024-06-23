@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import toi
 import hindu
+import ht
 
 from datetime import datetime
 from flask import Flask, jsonify, render_template
@@ -44,6 +45,22 @@ def api_articles():
 
 @app.route("/api/cron")
 def fetch_articles():
+    # Fetch articles from Hindu
+    hindu_links = hindu.get_hindu_links()
+    for link in hindu_links:
+        article = hindu.get_article(link)
+        if not db.session.execute(
+                db.select(Article).where(Article.title == list(article.keys())[0])).scalar_one_or_none():
+            store_article(article, "The Hindu")
+
+    # Fetch articles from HT
+    ht_links = ht.get_ht_links()
+    for link in hindu_links:
+        article = ht.get_article(link)
+        if not db.session.execute(
+                db.select(Article).where(Article.title == list(article.keys())[0])).scalar_one_or_none():
+            store_article(article, "Hindustan Times")
+
     # Fetch articles from TOI
     toi_links = toi.get_toi_links()
     for link in toi_links:
@@ -51,12 +68,7 @@ def fetch_articles():
         if not db.session.execute(db.select(Article).where(Article.title == list(article.keys())[0])).scalar_one_or_none():
             store_article(article, "The Times of India")
 
-    # Fetch articles from Hindu
-    hindu_links = hindu.get_hindu_links()
-    for link in hindu_links:
-        article = hindu.get_article(link)
-        if not db.session.execute(db.select(Article).where(Article.title == list(article.keys())[0])).scalar_one_or_none():
-            store_article(article, "The Hindu")
+
 
     return jsonify({"message": "Articles fetched successfully"}), 200
 
