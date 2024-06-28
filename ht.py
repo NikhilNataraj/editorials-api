@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 import time
@@ -23,7 +25,9 @@ def get_ht_links():
 
     try:
         driver.get(HT_URL)
-        time.sleep(5)
+        WebDriverWait(driver, 5).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "cartHolder"))
+        )
         data = driver.page_source
     finally:
         driver.quit()
@@ -59,7 +63,9 @@ def get_article(link):
 
     try:
         driver.get(link)
-        time.sleep(5)
+        WebDriverWait(driver, 5).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "cartHolder"))
+        )
         data = driver.page_source
     finally:
         driver.quit()
