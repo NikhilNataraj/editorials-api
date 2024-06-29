@@ -8,3 +8,5 @@ python-dotenv~=1.0.1
 Flask-SQLAlchemy
 selenium~=4.22.0
 webdriver-manager
+pyppeteer~=2.0.0
+playwright~=1.44.0

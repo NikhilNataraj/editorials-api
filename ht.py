@@ -1,68 +1,53 @@
-import os
-
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+# import os
 from bs4 import BeautifulSoup
 
+import asyncio
+from playwright.async_api import async_playwright
 
-def get_ht_links():
+
+async def get_ht_links():
     HT_URL = "https://www.hindustantimes.com/editorials"
 
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.binary_location = os.getenv("CHROME_BIN")
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page()
+        await page.goto(HT_URL)
 
-    service = Service(os.getenv("CHROMEDRIVER_BIN"))
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+        ht_article_links = await page.evaluate('''() => {
+            let editorial_titles = document.querySelectorAll("div.cartHolder.listView.track.timeAgo.articleClick");
 
-    try:
-        driver.get(HT_URL)
-        WebDriverWait(driver, 5).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "cartHolder"))
-        )
-        data = driver.page_source
-    finally:
-        driver.quit()
+            let ht_article_links = [];
+            editorial_titles.forEach(title => {
+                let article_url = title.getAttribute("data-weburl");
+                if (article_url) {
+                    ht_article_links.push(article_url);
+                }
+                if (ht_article_links.length >= 3) {
+                    return ht_article_links;
+                }
+            });
+            return ht_article_links;
+        }''')
 
-    soup = BeautifulSoup(data, "lxml")
-    editorial_titles = soup.find_all("div", class_=["cartHolder", "listView", "track", "timeAgo", "articleClick"])
-
-    ht_article_links = []
-    for title in editorial_titles:
-        article_url = title.get("data-weburl")
-        if article_url:
-            ht_article_links.append(article_url)
-        if len(ht_article_links) >= 3:
-            ht_article_links = ht_article_links[:3]
-            break
-
-    return ht_article_links
+        await browser.close()
+        return ht_article_links
 
 
-def get_article(link):
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.binary_location = os.getenv("CHROME_BIN")
+def fetch_links():
+    return asyncio.run(get_ht_links())
 
-    service = Service(os.getenv("CHROMEDRIVER_BIN"))
-    driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+# print(fetch_links())
 
-    try:
-        driver.get(link)
-        WebDriverWait(driver, 5).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "cartHolder"))
-        )
-        data = driver.page_source
-    finally:
-        driver.quit()
+
+async def get_article(link):
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page()
+        await page.goto(link)
+        await page.wait_for_selector('.mainContainer', timeout=10000)
+        data = await page.content()
+        await browser.close()
 
     soup = BeautifulSoup(data, "lxml")
     title = soup.find("h1", class_="hdg1").text.strip("\n")
@@ -70,3 +55,11 @@ def get_article(link):
     content = "".join([tag.text for tag in article])
 
     return {title: content.strip(" ")}
+
+
+def fetch_article(link):
+    return asyncio.run(get_article(link))
+
+
+# LINK = 'https://www.hindustantimes.com/editorials/challenge-and-an-opportunity-101719501023386.html'
+# print(fetch_article(LINK))

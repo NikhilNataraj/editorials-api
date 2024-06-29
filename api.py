@@ -61,9 +61,9 @@ def fetch_articles():
             store_article(article, "The Times of India")
 
     # Fetch articles from HT
-    ht_links = ht.get_ht_links()
+    ht_links = ht.fetch_links()
     for link in ht_links:
-        article = ht.get_article(link)
+        article = ht.fetch_article(link)
         if not db.session.execute(
                 db.select(Article).where(Article.title == list(article.keys())[0])).scalar_one_or_none():
             store_article(article, "Hindustan Times")
