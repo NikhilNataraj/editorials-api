@@ -1,13 +1,10 @@
-from playwright.sync_api import sync_playwright
 import subprocess
 
 
 def install_playwright():
-    subprocess.run(["playwright", "install"], check=True)
-    with sync_playwright() as p:
-        p.chromium.launch()
-        p.firefox.launch()
-        p.webkit.launch()
+    subprocess.run(["playwright", "install", "chromium"], check=True)
+    subprocess.run(["playwright", "install", "firefox"], check=True)
+    subprocess.run(["playwright", "install", "webkit"], check=True)
 
 
 if __name__ == "__main__":
