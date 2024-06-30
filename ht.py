@@ -37,8 +37,6 @@ def fetch_links():
     return asyncio.run(get_ht_links())
 
 
-# print(fetch_links())
-
 
 async def get_article(link):
     async with async_playwright() as p:
@@ -60,6 +58,3 @@ async def get_article(link):
 def fetch_article(link):
     return asyncio.run(get_article(link))
 
-
-# LINK = 'https://www.hindustantimes.com/editorials/challenge-and-an-opportunity-101719501023386.html'
-# print(fetch_article(LINK))
