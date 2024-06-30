@@ -1,4 +1,3 @@
-# import os
 from bs4 import BeautifulSoup
 
 import asyncio
@@ -35,7 +34,6 @@ async def get_ht_links():
 
 def fetch_links():
     return asyncio.run(get_ht_links())
-
 
 
 async def get_article(link):
