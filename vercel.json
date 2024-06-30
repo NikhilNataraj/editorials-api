@@ -11,8 +11,5 @@
       "src": "/api/cron",
       "dest": "/api.py"
     }
-  ],
-  "hooks": {
-    "build": "python3 -m playwright install && python3 -m playwright install-deps"
-  }
+  ]
 }
