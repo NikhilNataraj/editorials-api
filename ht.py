@@ -6,7 +6,6 @@ from playwright.async_api import async_playwright
 
 async def get_ht_links():
     HT_URL = "https://www.hindustantimes.com/editorials"
-
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()

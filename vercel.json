@@ -1,24 +1,18 @@
 {
-    "version": 2,
-    "builds": [
-        {
-            "src": "api.py",
-            "use": "@vercel/python",
-            "config": {
-                "buildCommand": "python3 postinstall.py"
-            }
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/api.py"
-        }
-    ],
-    "crons": [
-        {
-            "path": "/api/cron",
-            "schedule": "30 3 * * *"
-        }
-    ]
+  "version": 2,
+  "builds": [
+    {
+      "src": "api.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/cron",
+      "dest": "/api.py"
+    }
+  ],
+  "hooks": {
+    "build": "python3 -m playwright install && python3 -m playwright install-deps"
+  }
 }
