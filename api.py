@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import toi
 import hindu
 import ht
+import postinstall
 
 from datetime import datetime
 from flask import Flask, jsonify, render_template
@@ -61,6 +62,7 @@ def fetch_articles():
             store_article(article, "The Times of India")
 
     # Fetch articles from HT
+    postinstall.install_playwright()
     ht_links = ht.fetch_links()
     for link in ht_links:
         article = ht.fetch_article(link)
