@@ -32,5 +32,5 @@ def get_article(link):
     soup = BeautifulSoup(data, "lxml")
     content = [tag.text for tag in soup.find(class_="articlebodycontent").find_all("p")]
     content = ''.join(content[:2])
-    title = soup.find(class_="title").text.strip("\n")
+    title = soup.find("h1", {"class": "title"}).text.strip("\n")
     return {title: content}
